@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class Books {
 
-    public int length;
-    public Book[] books = new Book[length];
+    private int length;
+    private Book[] books = new Book[length];
 
     public Books(int length, Book[] books) {
         this.length = length;
