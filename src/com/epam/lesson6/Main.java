@@ -1,11 +1,13 @@
 package com.epam.lesson6;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        final int NUMBER_OF_BOOKS = 10;
+        final int MAX_NUMBER_OF_BOOKS = 12;
         Scanner input = new Scanner(System.in);
+        Books someBooks;
 
         Book[] sklad = new Book[]{
                 new Book(1, "Добрі новини з Аральського моря", "Ірена Карпа", "#книголав", 2019, 592, 300.00F),
@@ -24,30 +26,71 @@ public class Main {
                 new Book(14, "Жизня", "Олег Сенцов", "Видавництво Старого Лева", 2019, 160, 90.00F)
         };
 
-        Books books = new Books(NUMBER_OF_BOOKS, sklad);
+        Books bookShelf = new Books(MAX_NUMBER_OF_BOOKS);
+        bookShelf.fillBookShelf(sklad, 13);
+        System.out.println("\nThe bookshelf contents:");
+        bookShelf.printBooks();
 
-        books.addBook(sklad[books.getLength()]);
-        books.addBook(sklad[books.getLength()]);
-        books.addBook(sklad[books.getLength()]);
-        books.addBook(sklad[books.getLength()]);
+        try {
+            bookShelf.addBook(sklad[13]);
+            System.out.println("\nThe book is added:");
+        } catch (ArrayIndexOutOfBoundsException err) {
+            System.err.println("\nThe bookshelf is full, unable to add book:");
+        }
+        System.out.println(sklad[13]);
 
-        books.printBooks();
-
-        System.out.print("\n\nEnter author:->");
+        System.out.println("\nEnter author:");
         String author = input.nextLine();
-        Books newBooks1 = new Books();
-        newBooks1.setBooks(books.searchAuthor(author));
-        newBooks1.printBooks();
 
-        System.out.print("\n\nEnter year of publication:->");
-        int year = input.nextInt();
-        Books newBooks2 = new Books();
-        newBooks2.setBooks(books.searchYear(year));
-        newBooks2.printBooks();
+        try {
+            Validator.checkAuthor(author);
+            someBooks = bookShelf.searchAuthor(author);
+            someBooks.printBooks();
+        } catch (InvalidInputException err) {
+            System.err.println(err.getMessage());
+        }
 
-        System.out.print("\n\nEnter percent of revaluation:->");
-        float percent = input.nextFloat();
-        books.revaluation(percent);
-        books.printBooks();
+        System.out.println("\nEnter the year of publication:");
+        try {
+            int year = input.nextInt();
+            try {
+                Validator.checkYear(year);
+                someBooks = bookShelf.searchYear(year);
+                someBooks.printBooks();
+            } catch (InvalidInputException err) {
+                System.err.println(err.getMessage());
+            }
+        } catch (InputMismatchException err) {
+            System.err.println("\nThe entered data should contain only figures! Search can't be executed.");
+            input.nextLine();
+        }
+
+        System.out.println("\nEnter percent of revaluation:");
+        try {
+            float percent = input.nextFloat();
+            try {
+                Validator.checkPercent(percent);
+                bookShelf.revaluation(percent);
+                System.out.println("\nHere are the new prices:");
+                bookShelf.printBooks();
+            } catch (InvalidInputException err) {
+                System.err.println(err.getMessage());
+            }
+        } catch (InputMismatchException err) {
+            System.err.println("\nThe entered data should contain only figures! Revaluation can't be executed.");
+            input.nextLine();
+        }
+
+        System.out.println("\nSorted by author:");
+        someBooks = bookShelf.sorteByAuthor();
+        someBooks.printBooks();
+
+        System.out.println("\nSorted by publisher:");
+        someBooks = bookShelf.sorteByPublisher();
+        someBooks.printBooks();
+
+        System.out.println("\nSorted by cost:");
+        someBooks = bookShelf.sorteByCost();
+        someBooks.printBooks();
     }
 }

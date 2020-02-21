@@ -75,8 +75,9 @@ public class Book {
         this.cost = cost;
     }
 
-    public void viewBook() {
-        System.out.printf("\nID: %1$d %3$s, %2$s. - %4$s, %5$d. - %6$d стр.; ціна %7$.2f грн.",
+    @Override
+    public String toString() {
+        return String.format("ID: %1$2d %3$s, %2$s. - %4$s, %5$d. - %6$d стр.; ціна %7$.2f грн.",
                 id, title, author, publisher, yearOfPublication, numberOfPages, cost);
     }
 
