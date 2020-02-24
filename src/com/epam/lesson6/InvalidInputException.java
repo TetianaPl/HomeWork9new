@@ -22,6 +22,8 @@ public class InvalidInputException extends Exception {
                 return "\nThe percent can't be less then " + Validator.MIN_PERCENT + "! Revaluation can't be executed.";
             case 5:
                 return "\nNo books found";
+            case 6:
+                return "\nInvalid file name. Writing can't be executed.";
             default:
                 return super.getMessage();
         }

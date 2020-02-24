@@ -7,6 +7,9 @@ public class Books {
     private int quantity;
     private Book[] books;
 
+    public Books() {
+    }
+
     public Books(int length) {
         this.books = new Book[length];
         this.quantity = 0;
@@ -14,7 +17,13 @@ public class Books {
 
     public Books(Book[] books) {
         this.books = books;
-        this.quantity = books.length;
+        int i = 0;
+        for (Book elem : books) {
+            if (elem != null) {
+                i++;
+            } else break;
+        }
+        this.quantity = i;
     }
 
     public int getQuantity() {
@@ -111,5 +120,9 @@ public class Books {
         Arrays.sort(other, new ComparatorByCost());
         return new Books(other);
     }
+
 }
+
+
+
 

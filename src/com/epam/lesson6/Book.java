@@ -1,6 +1,11 @@
 package com.epam.lesson6;
 
-public class Book {
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+public class Book implements Externalizable {
     private int id;
     private String title;
     private String author;
@@ -8,6 +13,9 @@ public class Book {
     private int yearOfPublication;
     private int numberOfPages;
     private float cost;
+
+    public Book() {
+    }
 
     public Book(int id, String title, String author, String publisher, int yearOfPublication, int numberOfPages, float cost) {
         this.id = id;
@@ -75,10 +83,31 @@ public class Book {
         this.cost = cost;
     }
 
-    @Override
+        @Override
     public String toString() {
         return String.format("ID: %1$2d %3$s, %2$s. - %4$s, %5$d. - %6$d стр.; ціна %7$.2f грн.",
                 id, title, author, publisher, yearOfPublication, numberOfPages, cost);
     }
 
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(id);
+        out.writeObject(title);
+        out.writeObject(author);
+        out.writeObject(publisher);
+        out.writeInt(yearOfPublication);
+        out.writeInt(numberOfPages);
+        out.writeFloat(cost);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        id = in.readInt();
+        title = (String) in.readObject();
+        author = (String) in.readObject();
+        publisher = (String) in.readObject();
+        yearOfPublication = in.readInt();
+        numberOfPages = in.readInt();
+        cost = in.readFloat();
+    }
 }

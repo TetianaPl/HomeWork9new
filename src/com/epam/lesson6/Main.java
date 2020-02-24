@@ -2,42 +2,61 @@ package com.epam.lesson6;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.io.*;
 
 public class Main {
-    public static void main(String[] args) {
-        final int MAX_NUMBER_OF_BOOKS = 12;
+
+    static void saveChanges(Book[] books, String file) {
         Scanner input = new Scanner(System.in);
-        Books someBooks;
+        System.out.println("\nDo you want to write changes into the file " + file + "? Y / any symbol");
+        String answer = input.nextLine();
+        if (answer.trim().toLowerCase().equals("y")) {
+            IOBooks.writeBooksArray(books, file);
+        }
+    }
 
-        Book[] sklad = new Book[]{
-                new Book(1, "Добрі новини з Аральського моря", "Ірена Карпа", "#книголав", 2019, 592, 300.00F),
-                new Book(2, "Тореадори з Васюківки", "Всеволод Нестайко", "А-ба-ба-га-ла-ма-га", 2013, 544, 130.00F),
-                new Book(3, "Бог завжди подорожує інкогніто", "Лоран Гунель", "Книжковий клуб \"Клуб Сімейного Дозвілля\"", 2016, 416, 95.00F),
-                new Book(4, "Моя бабуся просить їй вибачити", "Фредрік Бакман", "#книголав", 2017, 416, 200.00F),
-                new Book(5, "Музей покинутих секретів", "Оксана Забужко", "Комора", 2015, 832, 220.00F),
-                new Book(6, "Доки світло не згасне назавжди", "Макс Кідрук", "Книжковий клуб \"Клуб Сімейного Дозвілля\"", 2019, 560, 150.00F),
-                new Book(7, "Гаррі Поттер і філософський камінь", "Джоан Роулінг", "А-ба-ба-га-ла-ма-га", 2016, 248, 460.00F),
-                new Book(8, "Маленький принц", "Антуан де Сент-Экзюпери", "А-ба-ба-га-ла-ма-га", 2014, 64, 220.00F),
-                new Book(9, "Гаррі Поттер і Келих Вогню", "Джоан Роулінг", "А-ба-ба-га-ла-ма-га", 2019, 464, 540.00F),
-                new Book(10, "Маркетер", "Олег Сенцов", "Видавництво Старого Лева", 2019, 376, 150.00F),
-                new Book(11, "Мексиканські хроніки", "Макс Кідрук", "Книжковий клуб \"Клуб Сімейного Дозвілля\"", 2016, 256, 95.00F),
-                new Book(12, "Купите книгу - она смешная ", "Олег Сенцов", "Фолио", 2016, 219, 99.00F),
-                new Book(13, "Подорож на Пуп Землі ", "Макс Кідрук", "Книжковий клуб \"Клуб Сімейного Дозвілля\"", 2016, 376, 100.00F),
-                new Book(14, "Жизня", "Олег Сенцов", "Видавництво Старого Лева", 2019, 160, 90.00F)
-        };
-
-        Books bookShelf = new Books(MAX_NUMBER_OF_BOOKS);
-        bookShelf.fillBookShelf(sklad, 13);
-        System.out.println("\nThe bookshelf contents:");
-        bookShelf.printBooks();
-
+    static void addBook(Books books, Book book) {
         try {
-            bookShelf.addBook(sklad[13]);
+            books.addBook(book);
             System.out.println("\nThe book is added:");
         } catch (ArrayIndexOutOfBoundsException err) {
             System.err.println("\nThe bookshelf is full, unable to add book:");
         }
-        System.out.println(sklad[13]);
+        System.out.println(book);
+    }
+
+    public static void main(String[] args) throws IOException {
+        final int MAX_NUMBER_OF_BOOKS = 14;
+        Scanner input = new Scanner(System.in);
+        Book newBook;
+        Books someBooks;
+
+        Book[] newBooks = IOBooks.readBooksArray(args[0], MAX_NUMBER_OF_BOOKS);
+        Books bookShelf = new Books(newBooks);
+
+        System.out.println("\nThe bookshelf contents:");
+        bookShelf.printBooks();
+
+        System.out.println("\nEnter the file name for storing intermediate results (without extension):");
+        String fileName = input.nextLine();
+
+        boolean validFileName = true;
+        try {
+            Validator.checkFile(fileName);
+        } catch (InvalidInputException err) {
+            System.err.println(err.getMessage());
+            validFileName = false;
+        }
+
+        newBook = new Book(13, "Подорож на Пуп Землі ", "Макс Кідрук", "Книжковий клуб \"Клуб Сімейного Дозвілля\"", 2016, 376, 100.00F);
+        addBook(bookShelf, newBook);
+
+        newBook = new Book(14, "Жизня", "Олег Сенцов", "Видавництво Старого Лева", 2019, 160, 90.00F);
+        addBook(bookShelf, newBook);
+
+        if (validFileName) {
+            saveChanges(bookShelf.getBooks(), fileName + ".ser");
+        }
 
         System.out.println("\nEnter author:");
         String author = input.nextLine();
@@ -81,6 +100,10 @@ public class Main {
             input.nextLine();
         }
 
+        if (validFileName) {
+            saveChanges(bookShelf.getBooks(), fileName + ".ser");
+        }
+
         System.out.println("\nSorted by author:");
         someBooks = bookShelf.sorteByAuthor();
         someBooks.printBooks();
@@ -92,5 +115,9 @@ public class Main {
         System.out.println("\nSorted by cost:");
         someBooks = bookShelf.sorteByCost();
         someBooks.printBooks();
+
+        System.out.println();
+        saveChanges(bookShelf.getBooks(), args[0]);
+
     }
 }

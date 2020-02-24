@@ -32,5 +32,12 @@ public class Validator {
         }
     }
 
+    public static void checkFile(String fileName) throws InvalidInputException {
+        Pattern pattern = Pattern.compile("(.+)?[><\\|\\?*/:\\\\\"](.+)?");
+        Matcher matcher = pattern.matcher(fileName);
+        if (matcher.find()) {
+            throw new InvalidInputException(6);
+        }
+    }
 }
 
