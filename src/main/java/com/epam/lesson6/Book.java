@@ -114,20 +114,6 @@ public class Book implements Externalizable {
         cost = in.readFloat();
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Book book = (Book) o;
-//        return getId() == book.getId() &&
-//                getYearOfPublication() == book.getYearOfPublication() &&
-//                getNumberOfPages() == book.getNumberOfPages() &&
-//                Float.compare(book.getCost(), getCost()) == 0 &&
-//                getTitle().equals(book.getTitle()) &&
-//                getAuthor().equals(book.getAuthor()) &&
-//                getPublisher().equals(book.getPublisher());
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
